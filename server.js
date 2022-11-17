@@ -1,5 +1,5 @@
 const chalk = require("chalk");
-const { downloadProcedure } = require('./downloader')
+const { downloadProcedure, fileCleanUp } = require('./downloader')
 module.exports = {
     initializeServer: () => {
         const express = require('express')
@@ -10,7 +10,13 @@ module.exports = {
         application.get('/getVideo', (req, res) => {
             if(req.query.videoURL){
                 downloadProcedure(req.query.videoURL).then(({ fileName }) => {
-                    res.status(200).sendFile(`downloads/${fileName}.mp4`, { root: __dirname })
+                    res.status(200).sendFile(`downloads/${fileName}`, { root: __dirname }, (err) => {
+                        if(err) {
+                            throw err
+                        } else {
+                            fileCleanUp(fileName)
+                        }
+                    })
                 })
             }
             else {

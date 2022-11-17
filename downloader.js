@@ -91,5 +91,14 @@ module.exports = {
                     reject()
                 });
         })
+    },
+    fileCleanUp: (fileUrl) => {
+        console.log(chalk.yellow(`[!] Removing all downloaded videos`));
+        fs.unlink(`./downloads/${fileUrl}`, err => {
+            if(err) {
+                console.log(chalk.red(`[!] Error`));
+            }
+        })
+        console.log(chalk.green(`[!] Downloaded videos removed`));
     }
 }
