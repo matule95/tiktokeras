@@ -56,11 +56,16 @@ const getVideoNoWM = async (url) => {
 }
 const getRedirectUrl = async (url) => {
     if(url.includes("vm.tiktok.com") || url.includes("vt.tiktok.com")) {
-        url = await fetch(url, {
-            redirect: "follow",
-            follow: 10,
+        const response = await fetch(url, {
+            redirect: "manual",
+            follow: 20,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
+            }
         });
-        url = url.url;
+        if( response.status === 301 || response.status === 302) {
+            url = new URL(response.headers.get('location'), response.url).href
+        }
         console.log(chalk.green("[*] Redirecting to: " + url));
     }
     return url;
